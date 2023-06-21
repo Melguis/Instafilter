@@ -19,6 +19,8 @@ struct ContentView: View {
     
     @State private var showingFilterSheet = false
     
+    @State private var disableSave = true
+    
     @State private var currentFilter: CIFilter = CIFilter.sepiaTone()
     let context = CIContext()
     
@@ -56,11 +58,17 @@ struct ContentView: View {
                     Spacer()
                     
                     Button("Save", action: save)
+                        .disabled(disableSave)
                 }
             }
             .padding([.horizontal, .bottom])
             .navigationTitle("Instafilter")
-            .onChange(of: inputImage) { _ in loadImage() }
+            .onChange(of: inputImage) { _ in
+                loadImage()
+                if inputImage != nil {
+                    disableSave = false
+                }
+            }
             .sheet(isPresented: $showingImagePicker) {
                 ImagePicker(image: $inputImage)
             }
